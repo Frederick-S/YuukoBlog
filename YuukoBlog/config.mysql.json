@@ -1,19 +1,14 @@
 ﻿{
-  "AvatarUrl": "https://avatars3.githubusercontent.com/u/2216750?v=3&s=460",
+  "AvatarUrl": "https://avatars1.githubusercontent.com/u/1182395?s=460&v=4",
   "AboutUrl": "/about",
   "Account": "root",
   "Password": "123456",
-  "Site": "あまみや ゆうこ",
-  "Description": "Amamiya Yuuko's ebullient future",
-  "Disqus": "yuuko",
+  "Site": "Alles klar!",
+  "Description": "",
+  "Disqus": "",
   "DefaultTemplate": "Default",
   "Database": {
     "Type": "MySQL",
     "ConnectionString": "Server=localhost; Uid=root; Pwd=123456; Database=yuuko"
-  },
-  "BlogRoll": {
-    "GitHub": "Kagamine",
-    "Follower": true,
-    "Following": false
   }
 }
