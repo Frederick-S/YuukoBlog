@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace YuukoBlog.Models
 {
@@ -18,7 +18,7 @@ namespace YuukoBlog.Models
         public string Summary { get; set; }
 
         public string Content { get; set; }
-        
+
         public DateTime Time { get; set; }
 
         public bool IsPage { get; set; }
@@ -34,14 +34,14 @@ namespace YuukoBlog.Models
         {
             return new PostViewModel
             {
-                Id = Id,
-                Summary = Summary,
-                Catalog = Catalog,
-                CatalogId = CatalogId,
-                Tags = Tags.ToList(),
-                Time = Time,
-                Title = Title,
-                Url = Url
+                Id = this.Id,
+                Summary = this.Summary,
+                Catalog = this.Catalog,
+                CatalogId = this.CatalogId,
+                Tags = this.Tags.ToList(),
+                Time = this.Time,
+                Title = this.Title,
+                Url = this.Url,
             };
         }
     }

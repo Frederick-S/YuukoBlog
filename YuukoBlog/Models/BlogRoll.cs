@@ -8,7 +8,7 @@ namespace YuukoBlog.Models
     public enum BlogRollType
     {
         Following,
-        Follower
+        Follower,
     }
 
     public class BlogRoll

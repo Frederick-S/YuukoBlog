@@ -7,6 +7,9 @@
     <OutputType>Exe</OutputType>
     <PackageId>YuukoBlog</PackageId>
     <RuntimeFrameworkVersion>2.0.0-*</RuntimeFrameworkVersion>
+    <DebugType>full</DebugType>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <NoWarn>$(NoWarn);SA0001;SA1633;SA1200</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +24,7 @@
     <PackageReference Include="Pomelo.AspNetCore.Extensions" Version="2.0.0-*" />
     <PackageReference Include="Pomelo.AspNetCore.TimedJob" Version="2.0.0-*" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.0.0" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta004" />
   </ItemGroup>
 
 </Project>

@@ -6,10 +6,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
     {
         public static bool IsAdmin(this IHtmlHelper self)
         {
-            if (self.ViewContext.HttpContext.Session.GetString("Admin") == "true")
-                return true;
-            else
-                return false;
+            return self.ViewContext.HttpContext.Session.GetString("Admin") == "true";
         }
     }
 }

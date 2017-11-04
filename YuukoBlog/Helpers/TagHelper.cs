@@ -5,12 +5,9 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
 {
     public static class TagHelper
     {
-        public static string TagSerialize(this IHtmlHelper self, IEnumerable<PostTag> Tags)
+        public static string TagSerialize(this IHtmlHelper self, IEnumerable<PostTag> tags)
         {
-            var ret = "";
-            foreach (var t in Tags)
-                ret += t.Tag + ", ";
-            return ret.TrimEnd(' ').TrimEnd(',');
+            return string.Join(", ", tags).TrimEnd(' ');
         }
     }
 }

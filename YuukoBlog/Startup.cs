@@ -13,18 +13,30 @@ namespace YuukoBlog
 {
     public class Startup
     {
+        public static void Main(string[] args)
+        {
+            var host = new WebHostBuilder()
+                .UseKestrel()
+                .UseIISIntegration()
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseStartup<Startup>()
+                .Build();
+
+            host.Run();
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
-            IConfiguration Configuration;
-            services.AddConfiguration(out Configuration);
+            IConfiguration configuration;
+            services.AddConfiguration(out configuration);
 
-            if (Configuration["Database:Type"] == "SQLite")
+            if (configuration["Database:Type"] == "SQLite")
             {
-                services.AddDbContext<BlogContext>(x => x.UseSqlite(Configuration["Database:ConnectionString"]));
+                services.AddDbContext<BlogContext>(x => x.UseSqlite(configuration["Database:ConnectionString"]));
             }
-            else if (Configuration["Database:Type"] == "MySQL")
+            else if (configuration["Database:Type"] == "MySQL")
             {
-                services.AddDbContext<BlogContext>(x => x.UseMySql(Configuration["Database:ConnectionString"]));
+                services.AddDbContext<BlogContext>(x => x.UseMySql(configuration["Database:ConnectionString"]));
             }
 
             services.AddSmartCookies();
@@ -62,18 +74,6 @@ namespace YuukoBlog
             await SampleData.InitializeYuukoBlog(app.ApplicationServices);
 
             app.UseTimedJob();
-        }
-
-        public static void Main(string[] args)
-        {
-            var host = new WebHostBuilder()
-                .UseKestrel()
-                .UseIISIntegration()
-                .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseStartup<Startup>()
-                .Build();
-
-            host.Run();
         }
     }
 }

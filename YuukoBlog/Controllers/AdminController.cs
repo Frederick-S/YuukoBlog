@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.Marked;
 using YuukoBlog.Filters;
@@ -14,9 +14,9 @@ namespace YuukoBlog.Controllers
         [AdminRequired]
         [HttpGet]
         [Route("Admin/Index")]
-        public IActionResult Index() 
+        public IActionResult Index()
         {
-            return View();
+            return this.View();
         }
 
         [AdminRequired]
@@ -25,39 +25,39 @@ namespace YuukoBlog.Controllers
         [Route("Admin/Index")]
         public IActionResult Index(Config config)
         {
-            Configuration["Account"] = config.Account;
-            Configuration["Password"] = config.Password;
-            Configuration["Site"] = config.Site;
-            Configuration["Description"] = config.Description;
-            Configuration["Disqus"] = config.Disqus;
-            Configuration["AvatarUrl"] = config.AvatarUrl;
-            Configuration["AboutUrl"] = config.AboutUrl;
-            Configuration["BlogRoll:GitHub"] = config.GitHub;
-            Configuration["BlogRoll:Follower"] = config.Follower.ToString();
-            Configuration["BlogRoll:Following"] = config.Following.ToString();
-            return RedirectToAction("Index", "Admin");
+            this.Configuration["Account"] = config.Account;
+            this.Configuration["Password"] = config.Password;
+            this.Configuration["Site"] = config.Site;
+            this.Configuration["Description"] = config.Description;
+            this.Configuration["Disqus"] = config.Disqus;
+            this.Configuration["AvatarUrl"] = config.AvatarUrl;
+            this.Configuration["AboutUrl"] = config.AboutUrl;
+            this.Configuration["BlogRoll:GitHub"] = config.GitHub;
+            this.Configuration["BlogRoll:Follower"] = config.Follower.ToString();
+            this.Configuration["BlogRoll:Following"] = config.Following.ToString();
+            return this.RedirectToAction("Index", "Admin");
         }
 
         [GuestRequired]
         public IActionResult Login()
         {
-            return View();
+            return this.View();
         }
 
         [GuestRequired]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(string Username, string Password)
+        public IActionResult Login(string username, string password)
         {
-            var tmp = Configuration["Account"];
-            if (Username == Configuration["Account"] && Password == Configuration["Password"])
+            var tmp = this.Configuration["Account"];
+            if (username == this.Configuration["Account"] && password == this.Configuration["Password"])
             {
-                HttpContext.Session.SetString("Admin", "true");
-                return RedirectToAction("Index", "Admin");
+                this.HttpContext.Session.SetString("Admin", "true");
+                return this.RedirectToAction("Index", "Admin");
             }
             else
             {
-                return View();
+                return this.View();
             }
         }
 
@@ -67,20 +67,24 @@ namespace YuukoBlog.Controllers
         [Route("Admin/Post/Edit")]
         public IActionResult PostEdit(string id, string newId, string tags, bool isPage, string title, Guid? catalog, string content)
         {
-            var post = DB.Posts
+            var post = this.DB.Posts
                 .Include(x => x.Tags)
                 .Where(x => x.Url == id)
                 .SingleOrDefault();
+
             if (post == null)
-                return Prompt(x =>
+            {
+                return this.Prompt(x =>
                 {
                     x.StatusCode = 404;
-                    x.Title = SR["Not Found"];
-                    x.Details = SR["The resources have not been found, please check your request."];
-                    x.RedirectUrl = Url.Link("default", new { controller = "Home", action = "Index" });
-                    x.RedirectText = SR["Back to home"];
+                    x.Title = this.SR["Not Found"];
+                    x.Details = this.SR["The resources have not been found, please check your request."];
+                    x.RedirectUrl = this.Url.Link("default", new { controller = "Home", action = "Index" });
+                    x.RedirectText = this.SR["Back to home"];
                 });
-            var summary = "";
+            }
+
+            var summary = string.Empty;
             var flag = false;
             if (content != null)
             {
@@ -90,34 +94,49 @@ namespace YuukoBlog.Controllers
                     for (var i = 0; i < 16; i++)
                     {
                         if (tmp[i].IndexOf("```") == 0)
+                        {
                             flag = !flag;
+                        }
+
                         summary += tmp[i] + '\n';
                     }
+
                     if (flag)
+                    {
                         summary += "```\r\n";
-                    summary += $"\r\n[{SR["Read More"]} »](/post/{newId})";
+                    }
+
+                    summary += $"\r\n[{this.SR["Read More"]} »](/post/{newId})";
                 }
                 else
                 {
                     summary = content;
                 }
             }
+
             foreach (var t in post.Tags)
-                DB.PostTags.Remove(t);
+            {
+                this.DB.PostTags.Remove(t);
+            }
+
             post.Url = newId;
             post.Summary = summary;
             post.Title = title;
             post.Content = content;
             post.CatalogId = catalog;
             post.IsPage = isPage;
+
             if (!string.IsNullOrEmpty(tags))
-            { 
-                var _tags = tags.Split(',');
-                foreach (var t in _tags)
-                    post.Tags.Add(new PostTag { PostId = post.Id, Tag = t.Trim(' ') });
+            {
+                foreach (var tag in tags.Split(','))
+                {
+                    post.Tags.Add(new PostTag { PostId = post.Id, Tag = tag.Trim(' ') });
+                }
             }
-            DB.SaveChanges();
-            return Content(Instance.Parse(content));
+
+            this.DB.SaveChanges();
+
+            return this.Content(Instance.Parse(content));
         }
 
         [AdminRequired]
@@ -126,24 +145,30 @@ namespace YuukoBlog.Controllers
         [Route("Admin/Post/Delete")]
         public IActionResult PostDelete(string id)
         {
-            var post = DB.Posts
+            var post = this.DB.Posts
                 .Include(x => x.Tags)
                 .Where(x => x.Url == id).SingleOrDefault();
-            
+
             if (post == null)
-                return Prompt(x =>
+            {
+                return this.Prompt(x =>
                 {
                     x.StatusCode = 404;
-                    x.Title = SR["Not Found"];
-                    x.Details = SR["The resources have not been found, please check your request."];
-                    x.RedirectUrl = Url.Link("default", new { controller = "Home", action = "Index" });
-                    x.RedirectText = SR["Back to home"];
+                    x.Title = this.SR["Not Found"];
+                    x.Details = this.SR["The resources have not been found, please check your request."];
+                    x.RedirectUrl = this.Url.Link("default", new { controller = "Home", action = "Index" });
+                    x.RedirectText = this.SR["Back to home"];
                 });
+            }
+
             foreach (var t in post.Tags)
-                DB.PostTags.Remove(t);
-            DB.Posts.Remove(post);
-            DB.SaveChanges();
-            return RedirectToAction("Index", "Home");
+            {
+                this.DB.PostTags.Remove(t);
+            }
+
+            this.DB.Posts.Remove(post);
+            this.DB.SaveChanges();
+            return this.RedirectToAction("Index", "Home");
         }
 
         [AdminRequired]
@@ -156,16 +181,16 @@ namespace YuukoBlog.Controllers
             {
                 Id = Guid.NewGuid(),
                 Url = Guid.NewGuid().ToString().Substring(0, 8),
-                Title = SR["Untitled Post"],
-                Content = "",
-                Summary = "",
+                Title = this.SR["Untitled Post"],
+                Content = string.Empty,
+                Summary = string.Empty,
                 CatalogId = null,
                 IsPage = false,
-                Time = DateTime.Now
+                Time = DateTime.Now,
             };
-            DB.Posts.Add(post);
-            DB.SaveChanges();
-            return RedirectToAction("Post", "Post", new { id = post.Url });
+            this.DB.Posts.Add(post);
+            this.DB.SaveChanges();
+            return this.RedirectToAction("Post", "Post", new { id = post.Url });
         }
 
         [AdminRequired]
@@ -173,14 +198,14 @@ namespace YuukoBlog.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Logout()
         {
-            HttpContext.Session.Clear();
-            return RedirectToAction("Index", "Home");
+            this.HttpContext.Session.Clear();
+            return this.RedirectToAction("Index", "Home");
         }
 
         [AdminRequired]
         public IActionResult Catalog()
         {
-            return View(DB.Catalogs.OrderByDescending(x => x.PRI).ToList());
+            return this.View(this.DB.Catalogs.OrderByDescending(x => x.PRI).ToList());
         }
 
         [AdminRequired]
@@ -189,19 +214,23 @@ namespace YuukoBlog.Controllers
         [Route("Admin/Catalog/Delete")]
         public IActionResult CatalogDelete(string id)
         {
-            var catalog = DB.Catalogs.Where(x => x.Url == id).SingleOrDefault();
+            var catalog = this.DB.Catalogs.Where(x => x.Url == id).SingleOrDefault();
+
             if (catalog == null)
-                return Prompt(x =>
+            {
+                return this.Prompt(x =>
                 {
                     x.StatusCode = 404;
-                    x.Title = SR["Not Found"];
-                    x.Details = SR["The resources have not been found, please check your request."];
-                    x.RedirectUrl = Url.Link("default", new { controller = "Home", action = "Index" });
-                    x.RedirectText = SR["Back to home"];
+                    x.Title = this.SR["Not Found"];
+                    x.Details = this.SR["The resources have not been found, please check your request."];
+                    x.RedirectUrl = this.Url.Link("default", new { controller = "Home", action = "Index" });
+                    x.RedirectText = this.SR["Back to home"];
                 });
-            DB.Catalogs.Remove(catalog);
-            DB.SaveChanges();
-            return Content("true");
+            }
+
+            this.DB.Catalogs.Remove(catalog);
+            this.DB.SaveChanges();
+            return this.Content("true");
         }
 
         [AdminRequired]
@@ -210,21 +239,25 @@ namespace YuukoBlog.Controllers
         [Route("Admin/Catalog/Edit")]
         public IActionResult CatalogEdit(string id, string newId, string title, int pri)
         {
-            var catalog = DB.Catalogs.Where(x => x.Url == id).SingleOrDefault();
+            var catalog = this.DB.Catalogs.Where(x => x.Url == id).SingleOrDefault();
+
             if (catalog == null)
-                return Prompt(x =>
+            {
+                return this.Prompt(x =>
                 {
                     x.StatusCode = 404;
-                    x.Title = SR["Not Found"];
-                    x.Details = SR["The resources have not been found, please check your request."];
-                    x.RedirectUrl = Url.Link("default", new { controller = "Home", action = "Index" });
-                    x.RedirectText = SR["Back to home"];
+                    x.Title = this.SR["Not Found"];
+                    x.Details = this.SR["The resources have not been found, please check your request."];
+                    x.RedirectUrl = this.Url.Link("default", new { controller = "Home", action = "Index" });
+                    x.RedirectText = this.SR["Back to home"];
                 });
+            }
+
             catalog.Url = newId;
             catalog.Title = title;
             catalog.PRI = pri;
-            DB.SaveChanges();
-            return Content("true");
+            this.DB.SaveChanges();
+            return this.Content("true");
         }
 
         [AdminRequired]
@@ -237,11 +270,11 @@ namespace YuukoBlog.Controllers
             {
                 Url = Guid.NewGuid().ToString().Substring(0, 8),
                 PRI = 0,
-                Title = SR["New Catalog"]
+                Title = this.SR["New Catalog"],
             };
-            DB.Catalogs.Add(catalog);
-            DB.SaveChanges();
-            return RedirectToAction("Catalog", "Admin");
+            this.DB.Catalogs.Add(catalog);
+            this.DB.SaveChanges();
+            return this.RedirectToAction("Catalog", "Admin");
         }
     }
 }

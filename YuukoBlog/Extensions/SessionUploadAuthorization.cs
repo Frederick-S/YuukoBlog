@@ -12,27 +12,19 @@ namespace YuukoBlog.Extensions
 
         public SessionUploadAuthorization(IServiceProvider provider)
         {
-            services = provider;
+            this.services = provider;
         }
 
         public bool IsAbleToUpload()
         {
-            var val = services.GetRequiredService<IHttpContextAccessor>().HttpContext.Session.GetString("Admin");
-            if (val == "true")
-                return true;
-            return false;
-        }
-    }
-}
+            var val = this.services.GetRequiredService<IHttpContextAccessor>().HttpContext.Session.GetString("Admin");
 
-namespace Microsoft.Extensions.DependencyInjection
-{
-    public static class SignedUserUploadAuthorizationProviderServiceCollectionExtensions
-    {
-        public static IBlobStorageBuilder AddSessionUploadAuthorization(this IBlobStorageBuilder self)
-        {
-            self.Services.AddSingleton<IBlobUploadAuthorizationProvider, SessionUploadAuthorization>();
-            return self;
+            if (val == "true")
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

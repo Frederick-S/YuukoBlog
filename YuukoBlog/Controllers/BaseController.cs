@@ -13,33 +13,33 @@ namespace YuukoBlog.Controllers
             base.Prepare();
 
             // Building Constants
-            ViewBag.Position = "home";
-            ViewBag.IsPost = false;
-            ViewBag.Description = Configuration["Description"];
-            ViewBag.Title = Configuration["Site"];
-            ViewBag.Site = Configuration["Site"];
-            ViewBag.AboutUrl = Configuration["AboutUrl"];
-            ViewBag.AvatarUrl = Configuration["AvatarUrl"];
-            ViewBag.Disqus = Configuration["Disqus"];
-            ViewBag.Account = Configuration["Account"];
-            ViewBag.DefaultTemplate = Configuration["DefaultTemplate"];
-            ViewBag.GitHub = Configuration["BlogRoll:GitHub"];
-            ViewBag.Following = Convert.ToBoolean(Configuration["BlogRoll:Following"]);
-            ViewBag.Follower = Convert.ToBoolean(Configuration["BlogRoll:Follower"]);
+            this.ViewBag.Position = "home";
+            this.ViewBag.IsPost = false;
+            this.ViewBag.Description = this.Configuration["Description"];
+            this.ViewBag.Title = this.Configuration["Site"];
+            this.ViewBag.Site = this.Configuration["Site"];
+            this.ViewBag.AboutUrl = this.Configuration["AboutUrl"];
+            this.ViewBag.AvatarUrl = this.Configuration["AvatarUrl"];
+            this.ViewBag.Disqus = this.Configuration["Disqus"];
+            this.ViewBag.Account = this.Configuration["Account"];
+            this.ViewBag.DefaultTemplate = this.Configuration["DefaultTemplate"];
+            this.ViewBag.GitHub = this.Configuration["BlogRoll:GitHub"];
+            this.ViewBag.Following = Convert.ToBoolean(this.Configuration["BlogRoll:Following"]);
+            this.ViewBag.Follower = Convert.ToBoolean(this.Configuration["BlogRoll:Follower"]);
 
             // Building Tags
-            ViewBag.Tags = DB.PostTags
+            this.ViewBag.Tags = this.DB.PostTags
                 .OrderBy(x => x.Tag)
                 .GroupBy(x => x.Tag)
                 .Select(x => new TagViewModel
                 {
                     Title = x.Key,
-                    Count = x.Count()
+                    Count = x.Count(),
                 })
                 .ToList();
 
             // Building Calendar
-            ViewBag.Calendars = DB.Posts
+            this.ViewBag.Calendars = this.DB.Posts
                 .Where(x => !x.IsPage)
                 .OrderByDescending(x => x.Time)
                 .GroupBy(x => new { Year = x.Time.Year, Month = x.Time.Month })
@@ -47,12 +47,12 @@ namespace YuukoBlog.Controllers
                 {
                     Year = x.Key.Year,
                     Month = x.Key.Month,
-                    Count = x.Count()
+                    Count = x.Count(),
                 })
                 .ToList();
 
             // Building Catalogs
-            ViewBag.Catalogs = DB.Catalogs
+            this.ViewBag.Catalogs = this.DB.Catalogs
                 .Include(x => x.Posts)
                 .OrderByDescending(x => x.PRI)
                 .ToList()
@@ -62,23 +62,23 @@ namespace YuukoBlog.Controllers
                     Title = x.Title,
                     Count = x.Posts.Count(),
                     PRI = x.PRI,
-                    Url = x.Url
+                    Url = x.Url,
                 })
                 .ToList();
 
             // Building Blog Rolls
-            var rolls = DB.BlogRolls
+            var rolls = this.DB.BlogRolls
                 .Where(x => !string.IsNullOrEmpty(x.URL) && x.AvatarId.HasValue)
                 .OrderByDescending(x => x.Type)
                 .Select(x => new BlogRollViewModel
                 {
                     AvatarId = x.AvatarId.Value,
                     Name = x.NickName,
-                    URL = x.URL
+                    URL = x.URL,
                 })
                 .ToList();
             rolls.Reverse();
-            ViewBag.Rolls = rolls;
+            this.ViewBag.Rolls = rolls;
         }
     }
 }
