@@ -1,0 +1,13 @@
+image: Visual Studio 2017
+environment:
+  PROJECT_FILE: ./YuukoBlog/YuukoBlog.csproj
+  TEST_PROJECT_FILE: ./YuukoBlog.Tests/YuukoBlog.Tests.csproj
+  CODECOV_REPO_TOKEN:
+    secure: m/HEi6uH46oHxknva18rsPADaMJUMf8BagdNt3qGVBkk4YhI39QUJLd2Lvw/JQAG
+build_script:
+  - cmd: dotnet build %PROJECT_FILE%
+  - cmd: dotnet build %TEST_PROJECT_FILE%
+test_script:
+  - cmd: dotnet test %TEST_PROJECT_FILE%
+  - bash coverage.sh
+  - bash codecov.sh
