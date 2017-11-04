@@ -24,6 +24,7 @@ namespace YuukoBlog.Filters
             if (context.HttpContext.Session.GetString("Admin") != "true")
             {
                 context.Result = new RedirectResult("/Admin/Login");
+
                 return Task.FromResult(0);
             }
 

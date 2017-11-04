@@ -35,6 +35,7 @@ namespace YuukoBlog.Controllers
             this.Configuration["BlogRoll:GitHub"] = config.GitHub;
             this.Configuration["BlogRoll:Follower"] = config.Follower.ToString();
             this.Configuration["BlogRoll:Following"] = config.Following.ToString();
+
             return this.RedirectToAction("Index", "Admin");
         }
 
@@ -49,10 +50,12 @@ namespace YuukoBlog.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Login(string username, string password)
         {
-            var tmp = this.Configuration["Account"];
+            var account = this.Configuration["Account"];
+
             if (username == this.Configuration["Account"] && password == this.Configuration["Password"])
             {
                 this.HttpContext.Session.SetString("Admin", "true");
+
                 return this.RedirectToAction("Index", "Admin");
             }
             else
@@ -86,19 +89,21 @@ namespace YuukoBlog.Controllers
 
             var summary = string.Empty;
             var flag = false;
+
             if (content != null)
             {
-                var tmp = content.Split('\n');
-                if (tmp.Count() > 16)
+                var temp = content.Split('\n');
+
+                if (temp.Count() > 16)
                 {
                     for (var i = 0; i < 16; i++)
                     {
-                        if (tmp[i].IndexOf("```") == 0)
+                        if (temp[i].IndexOf("```") == 0)
                         {
                             flag = !flag;
                         }
 
-                        summary += tmp[i] + '\n';
+                        summary += temp[i] + '\n';
                     }
 
                     if (flag)
@@ -114,9 +119,9 @@ namespace YuukoBlog.Controllers
                 }
             }
 
-            foreach (var t in post.Tags)
+            foreach (var tag in post.Tags)
             {
-                this.DB.PostTags.Remove(t);
+                this.DB.PostTags.Remove(tag);
             }
 
             post.Url = newId;
@@ -161,13 +166,14 @@ namespace YuukoBlog.Controllers
                 });
             }
 
-            foreach (var t in post.Tags)
+            foreach (var tag in post.Tags)
             {
-                this.DB.PostTags.Remove(t);
+                this.DB.PostTags.Remove(tag);
             }
 
             this.DB.Posts.Remove(post);
             this.DB.SaveChanges();
+
             return this.RedirectToAction("Index", "Home");
         }
 
@@ -188,8 +194,10 @@ namespace YuukoBlog.Controllers
                 IsPage = false,
                 Time = DateTime.Now,
             };
+
             this.DB.Posts.Add(post);
             this.DB.SaveChanges();
+
             return this.RedirectToAction("Post", "Post", new { id = post.Url });
         }
 
@@ -199,6 +207,7 @@ namespace YuukoBlog.Controllers
         public IActionResult Logout()
         {
             this.HttpContext.Session.Clear();
+
             return this.RedirectToAction("Index", "Home");
         }
 
@@ -230,6 +239,7 @@ namespace YuukoBlog.Controllers
 
             this.DB.Catalogs.Remove(catalog);
             this.DB.SaveChanges();
+
             return this.Content("true");
         }
 
@@ -256,7 +266,9 @@ namespace YuukoBlog.Controllers
             catalog.Url = newId;
             catalog.Title = title;
             catalog.PRI = pri;
+
             this.DB.SaveChanges();
+
             return this.Content("true");
         }
 
@@ -272,8 +284,10 @@ namespace YuukoBlog.Controllers
                 PRI = 0,
                 Title = this.SR["New Catalog"],
             };
+
             this.DB.Catalogs.Add(catalog);
             this.DB.SaveChanges();
+
             return this.RedirectToAction("Catalog", "Admin");
         }
     }

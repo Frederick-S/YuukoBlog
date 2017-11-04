@@ -9,6 +9,7 @@ namespace YuukoBlog.Models
         public static async Task InitializeYuukoBlog(IServiceProvider serviceProvider)
         {
             var db = serviceProvider.GetService<BlogContext>();
+
             await db.Database.EnsureCreatedAsync();
         }
     }

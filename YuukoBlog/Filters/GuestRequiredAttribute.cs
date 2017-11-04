@@ -28,6 +28,7 @@ namespace YuukoBlog.Filters
             if (context.HttpContext.Session.GetString("Admin") == "true")
             {
                 context.Result = new RedirectResult("/Admin/Index");
+
                 return Task.FromResult(0);
             }
 

@@ -77,7 +77,9 @@ namespace YuukoBlog.Controllers
                     URL = x.URL,
                 })
                 .ToList();
+
             rolls.Reverse();
+
             this.ViewBag.Rolls = rolls;
         }
     }
