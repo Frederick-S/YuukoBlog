@@ -1,4 +1,4 @@
-# Yuuko Blog
+# Yuuko Blog [![CircleCI](https://circleci.com/gh/Frederick-S/YuukoBlog.svg?style=shield)](https://circleci.com/gh/Frederick-S/YuukoBlog) [![Build status](https://ci.appveyor.com/api/projects/status/238dfcxb3ay6ejsh/branch/master?svg=true)](https://ci.appveyor.com/project/Frederick-S/yuukoblog/branch/master) [![codecov](https://codecov.io/gh/Frederick-S/YuukoBlog/branch/master/graph/badge.svg)](https://codecov.io/gh/Frederick-S/YuukoBlog)
 
 A light-weight single user blog system which based on ASP.Net Core 2.0.0
 - ASP.Net Core 2.0.0
